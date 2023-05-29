@@ -3,6 +3,12 @@ import api from "../../services/api";
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import RandomBox from "../../../components/RandomBox";
 import { BotaoGerar } from "./style";
+import { initializeApp } from 'firebase/app'
+import { firebaseConfig } from '../../../firebase-config';
+import { getDatabase, ref, set, push, get, remove} from 'firebase/database';
+import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import { Platform,Alert } from "react-native";
+import DialogInput from 'react-native-dialog-input';
 
 const Home = () => {
     const[text, setText] = useState('')
@@ -10,6 +16,10 @@ const Home = () => {
     const[isLoading, setIsLoading] = useState(true)
     const[pokemonsAleatorios, setPokemonsAleatorios] = useState([]);
     const[generated, setGenerated] = useState(false)
+    const [visible, setVisible] = React.useState(false);
+    const database = getDatabase();
+    const auth = getAuth();
+    const user = auth.currentUser.uid
 
     useEffect(() =>{
         async function getAllPokemons(){
@@ -99,7 +109,28 @@ const Home = () => {
                 </View>                    
             }
             
-             <TouchableOpacity style={styles.botao}>
+             <TouchableOpacity style={styles.botao2} onPress={ () => { 
+                setVisible(true)
+                }}>
+                <DialogInput
+                    isDialogVisible={visible}
+                    title={"Deck Name"}
+                    message={"Nome deck:"}
+                    hintInput ={"Digite..."}
+                    submitInput={ (inputText) => {
+                        const collectionRef = ref(database, `${user}/decks`);
+                            var ids = []
+                            pokemonsAleatorios.forEach((item) =>{
+                                ids.push(item.id)
+                            })
+                            push(collectionRef, {
+                                name: inputText,
+                                id: ids,
+                            });
+                        setVisible(false);
+                    }}
+                    closeDialog={() => setVisible(false)}>
+                </DialogInput>
                 <Text style={styles.textoBotao}>Salvar</Text>
             </TouchableOpacity>
         </SafeAreaView>
@@ -134,6 +165,17 @@ const styles = StyleSheet.create({
         color:'white',
         fontWeight:'900',
         fontSize:18
+    },
+    botao2:{
+        marginTop:20,
+        marginBottom:40, 
+        backgroundColor:'#1F3955',
+        width:190,
+        height:50,
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:38,
     }
 })
 

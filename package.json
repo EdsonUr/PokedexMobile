@@ -20,6 +20,7 @@
     "firebase": "^9.22.1",
     "react": "18.2.0",
     "react-native": "0.71.7",
+    "react-native-dialog-input": "^1.0.8",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-pager-view": "6.1.2",
     "react-native-progress": "^5.0.0",
