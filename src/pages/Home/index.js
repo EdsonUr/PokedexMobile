@@ -81,18 +81,46 @@ const Home = () => {
             </TouchableOpacity>
             {
                 generated?
-                <FlatList
-                contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
-                keyExtractor={(pokemon) => pokemon.id}
-                ItemSeparatorComponent={() => <View style={{height: 35}} />}
-                data={pokemonsAleatorios}
-                renderItem={({item}) =>(
-                    <RandomBox name={item.name} id={item.id} type={item.types} />
-                )}
-                numColumns={2}
-                style={styles.lista}
-                />
+                <>
+                  <FlatList
+                    contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
+                    keyExtractor={(pokemon) => pokemon.id}
+                    ItemSeparatorComponent={() => <View style={{height: 35}} />}
+                    data={pokemonsAleatorios}
+                    renderItem={({item}) =>(
+                        <RandomBox name={item.name} id={item.id} type={item.types} />
+                    )}
+                    numColumns={2}
+                    style={styles.lista}
+                    />
+                    <TouchableOpacity style={styles.botao2} onPress={ () => { 
+                    setVisible(true)
+                    }}>
+                        <DialogInput
+                            isDialogVisible={visible}
+                            title={"Deck Name"}
+                            message={"Nome deck:"}
+                            hintInput ={"Digite..."}
+                            submitInput={ (inputText) => {
+                                const collectionRef = ref(database, `${user}/decks`);
+                                    var ids = []
+                                    pokemonsAleatorios.forEach((item) =>{
+                                        ids.push(item.id)
+                                    })
+                                    push(collectionRef, {
+                                        name: inputText,
+                                        id: ids,
+                                    });
+                                setVisible(false);
+                            }}
+                            closeDialog={() => setVisible(false)}>
+                        </DialogInput>
+                        <Text style={styles.textoBotao}>Salvar</Text>
+                    </TouchableOpacity>
+                </>
+              
                 :
+                <>
                 <View>
                     <View style={{flexDirection:'row', marginBottom:35}}>
                         <RandomBox name={null} id={null} type={null}/>
@@ -106,33 +134,14 @@ const Home = () => {
                         <RandomBox name={null} id={null} type={null}/>
                         <RandomBox name={null} id={null} type={null}/>
                     </View>
-                </View>                    
+                </View>      
+                <View style={styles.inv}>
+                </View> 
+                </>
+                             
             }
             
-             <TouchableOpacity style={styles.botao2} onPress={ () => { 
-                setVisible(true)
-                }}>
-                <DialogInput
-                    isDialogVisible={visible}
-                    title={"Deck Name"}
-                    message={"Nome deck:"}
-                    hintInput ={"Digite..."}
-                    submitInput={ (inputText) => {
-                        const collectionRef = ref(database, `${user}/decks`);
-                            var ids = []
-                            pokemonsAleatorios.forEach((item) =>{
-                                ids.push(item.id)
-                            })
-                            push(collectionRef, {
-                                name: inputText,
-                                id: ids,
-                            });
-                        setVisible(false);
-                    }}
-                    closeDialog={() => setVisible(false)}>
-                </DialogInput>
-                <Text style={styles.textoBotao}>Salvar</Text>
-            </TouchableOpacity>
+             
         </SafeAreaView>
     )
 }
@@ -170,6 +179,16 @@ const styles = StyleSheet.create({
         marginTop:20,
         marginBottom:40, 
         backgroundColor:'#1F3955',
+        width:190,
+        height:50,
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:38,
+    },
+    inv:{
+        marginTop:20,
+        marginBottom:40, 
         width:190,
         height:50,
         display:'flex',

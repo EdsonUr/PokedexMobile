@@ -17,7 +17,7 @@ const DeckBox = ({id, name, setRefresh, valuesLink})=>{
         console.log(itemRef)
         await remove(itemRef)
         setRefresh((prevRefresh) => prevRefresh + 1)
-        Alert.alert(`${name}`)
+        Alert.alert("Removido")
     }
     
   return (
