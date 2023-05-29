@@ -1,11 +1,108 @@
-import React from "react";
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from "react";
+import api from "../../services/api";
+import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import RandomBox from "../../../components/RandomBox";
+import { BotaoGerar } from "./style";
 
 const Home = () => {
+    const[text, setText] = useState('')
+    const[pokemons, setPokemons] = useState([])
+    const[isLoading, setIsLoading] = useState(true)
+    const[pokemonsAleatorios, setPokemonsAleatorios] = useState([]);
+    const[generated, setGenerated] = useState(false)
+
+    useEffect(() =>{
+        async function getAllPokemons(){
+            const response = await api.get('/pokemon?limit=40&offset=0')
+            const { results } = response.data
+
+            const loadPokemons = await Promise.all(
+                results.map(async (pokemon) => {
+                    const {id, types} = await getMoreInfo(pokemon.url)
+                    
+                    return{
+                        name:pokemon.name,
+                        id,
+                        types
+                    }
+
+                })
+            )
+            setPokemons(loadPokemons)
+            setIsLoading(false)
+        }
+
+        getAllPokemons()
+    },[])
+
+    async function getMoreInfo(url){
+        const response = await api.get(url)
+        const {id, types} = response.data
+
+        return{
+            id, types
+        }
+    }
+
+    const handleRandom = () =>{
+        var aleatorio = []
+        var indices = []
+        var control = true
+        for(let i =0; i < 6; i++){
+            control = true
+            while(control){
+                var index = Math.floor(Math.random()*pokemons.length);
+                if(indices.includes(index)){
+                    null
+                }else{
+                    indices.push(index)
+                    aleatorio.push(pokemons[index])
+                    control = false
+                }
+            }
+        }
+        setPokemonsAleatorios(aleatorio)
+        setGenerated(true)
+    }
     return(
-        <View style={styles.container}>
-            <Text style={styles.text}>Pagina Home</Text>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <TouchableOpacity style={styles.botao} onPress={() => handleRandom()}  >
+                <Text style={styles.textoBotao}>Gerar</Text>
+            </TouchableOpacity>
+            {
+                generated?
+                <FlatList
+                contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
+                keyExtractor={(pokemon) => pokemon.id}
+                ItemSeparatorComponent={() => <View style={{height: 35}} />}
+                data={pokemonsAleatorios}
+                renderItem={({item}) =>(
+                    <RandomBox name={item.name} id={item.id} type={item.types} />
+                )}
+                numColumns={2}
+                style={styles.lista}
+                />
+                :
+                <View>
+                    <View style={{flexDirection:'row', marginBottom:35}}>
+                        <RandomBox name={null} id={null} type={null}/>
+                        <RandomBox name={null} id={null} type={null}/>
+                    </View>
+                    <View style={{flexDirection:'row', marginBottom:35}}>
+                        <RandomBox name={null} id={null} type={null}/>
+                        <RandomBox name={null} id={null} type={null}/>
+                    </View>
+                    <View style={{flexDirection:'row', marginBottom:35}}>
+                        <RandomBox name={null} id={null} type={null}/>
+                        <RandomBox name={null} id={null} type={null}/>
+                    </View>
+                </View>                    
+            }
+            
+             <TouchableOpacity style={styles.botao}>
+                <Text style={styles.textoBotao}>Salvar</Text>
+            </TouchableOpacity>
+        </SafeAreaView>
     )
 }
 
@@ -18,6 +115,25 @@ const styles = StyleSheet.create({
     text:{
         fontSize:25,
         fontWeight:'bold'
+    },
+    botao:{
+        marginTop:20,
+        marginBottom:40, 
+        backgroundColor:'#1F3955',
+        width:190,
+        height:50,
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:38,
+    },
+    lista:{
+        width:'100%',
+    },  
+    textoBotao:{
+        color:'white',
+        fontWeight:'900',
+        fontSize:18
     }
 })
 
