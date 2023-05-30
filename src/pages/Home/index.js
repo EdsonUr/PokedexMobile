@@ -105,8 +105,13 @@ const Home = () => {
                                 const collectionRef = ref(database, `${user}/decks`);
                                     var ids = []
                                     pokemonsAleatorios.forEach((item) =>{
-                                        ids.push(item.id)
+                                        const namePokemon = item.name;  
+                                        const id = item.id;  
+                                        const types = item.types;  
+                                        const infos = {namePokemon, id, types}
+                                        ids.push(infos)
                                     })
+                                    console.log(ids)
                                     push(collectionRef, {
                                         name: inputText,
                                         id: ids,

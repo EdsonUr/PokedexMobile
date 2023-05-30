@@ -28,10 +28,17 @@ const DecksGerados = () => {
             var banco2 = []
             if(values){
                 Object.keys(values).forEach((item) => {
+                    var infos = []
                     const valuesLink = item 
                     const name = values[item].name
-                    const id = values[item].id
-                    const info = {name, id, valuesLink}
+                    Object.keys(values[item].id).forEach((pok) =>{
+                        const namePok = values[item].id[pok].namePokemon
+                        const id = values[item].id[pok].id
+                        const types = values[item].id[pok].types
+                        const info2 = {namePok,id, types}
+                        infos.push(info2)
+                    })
+                    const info = {name, infos, valuesLink}
                     banco2.push(info)
                 })
                 setBanco(banco2) 
@@ -42,8 +49,8 @@ const DecksGerados = () => {
             }
         })
         setIsLoading(false)
-        console.log("Entrou useEffect")
     },[refresh])
+    console.log(banco)
      return(
         <View style={styles.container}>
             {
@@ -56,7 +63,7 @@ const DecksGerados = () => {
                 <ScrollView style={{width:'100%'}} contentContainerStyle={{alignItems:'center'}}>
                     {
                         banco.map((item, index)=>(
-                            <DeckBox key={index} name={item.name} id={item.id} valuesLink={item.valuesLink} setRefresh={setRefresh}/>
+                            <DeckBox key={index} name={item.name} infos={item.infos} valuesLink={item.valuesLink} setRefresh={setRefresh}/>
                         ))
                     }
                 </ScrollView>

@@ -141,7 +141,7 @@ const PokemonInfo = () => {
                             await push(collectionRef, {
                                 name: name,
                                 id: id,
-                                type: type[0],
+                                type: type,
                             });
                             getData()
                             Alert.alert('Adicionado')

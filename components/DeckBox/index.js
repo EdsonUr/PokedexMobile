@@ -1,3 +1,4 @@
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react'
 import { Text, View,Image, TouchableOpacity, Alert } from 'react-native';
 import { Container,InfoContainer,ContainerDados,PokemonsContainer, NomeTexto } from './style';
@@ -7,7 +8,8 @@ import { firebaseConfig } from '../../firebase-config';
 import { getDatabase, ref, set, push, get, remove} from 'firebase/database';
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
 
-const DeckBox = ({id, name, setRefresh, valuesLink})=>{
+const DeckBox = ({infos, name, setRefresh, valuesLink})=>{
+    const navigation = useNavigation()
     const database = getDatabase();
     const auth = getAuth();
     const user = auth.currentUser.uid
@@ -28,8 +30,10 @@ const DeckBox = ({id, name, setRefresh, valuesLink})=>{
             </InfoContainer>
             <PokemonsContainer>
                 {
-                    id.map((item, index)=>(
-                        <Image key={index} source={{uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item}.png`}} style={{width:50,height:50}} />
+                    infos.map((item, index)=>(
+                        <TouchableOpacity key={index} onPress={()=>navigation.navigate('PokemonInfo', {name:item.namePok, id:item.id, type:item.types})}>
+                            <Image source={{uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.id}.png`}} style={{width:50,height:50}} />
+                        </TouchableOpacity>
                     ))
                 }
 

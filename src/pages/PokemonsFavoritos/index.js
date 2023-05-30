@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ActivityIndicator, Image } from 'react-native';
 import { initializeApp } from 'firebase/app'
@@ -8,6 +9,7 @@ import { Container, Lista } from "./style";
 import PokemonBox from '../../../components/PokemonsBox'
 
 const PokemonsFavoritos = () => {
+    const isFocused = useIsFocused();
     const[db, setDb] = useState({})
     const[banco, setBanco] = useState([])
     const[isLoading, setIsLoading] = useState(true)
@@ -26,12 +28,10 @@ const PokemonsFavoritos = () => {
             var banco2 = []
             if(values){
                 Object.keys(values).forEach((item) => {
-                    var typeArray = []
                     const name = values[item].name
                     const id = values[item].id
                     const type = values[item].type
-                    typeArray.push(type)
-                    const info = {name, id, typeArray}
+                    const info = {name, id, type}
                     banco2.push(info)
                 })
                 setBanco(banco2) 
@@ -42,7 +42,8 @@ const PokemonsFavoritos = () => {
             }
         })
         setIsLoading(false)
-    },[db])
+        console.log("Clicou")
+    },[isFocused])
 
       return(
         <Container>
@@ -61,7 +62,7 @@ const PokemonsFavoritos = () => {
                 contentContainerStyle={{alignItems:'center'}}
                 data={banco}
                 renderItem={({ item }) => (
-                    <PokemonBox  name={item.name} id={item.id} type={item?.typeArray}/>
+                    <PokemonBox  name={item.name} id={item.id} type={item?.type}/>
                     
                 )}
             />
