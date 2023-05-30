@@ -1,10 +1,10 @@
 import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ActivityIndicator, Image } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { initializeApp } from 'firebase/app'
 import { firebaseConfig } from '../../../firebase-config';
-import { getDatabase, ref, set, push, get, remove} from 'firebase/database';
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import { getDatabase, ref, get} from 'firebase/database';
+import {getAuth} from 'firebase/auth'
 import { Container, Lista } from "./style";
 import PokemonBox from '../../../components/PokemonsBox'
 

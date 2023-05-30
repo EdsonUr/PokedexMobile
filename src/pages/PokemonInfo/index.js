@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { StyleSheet, Text, View, Image,ScrollView, ActivityIndicator} from 'react-native';
 import { TouchableOpacity } from "react-native";
 import boxType from "../../GlobalStyles/boxType";
@@ -8,12 +8,12 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import api from "../../services/api";
 import * as Progress from 'react-native-progress';
 import PokemonEvolutionBox from "../../../components/PokemonEvolutionBox";
-import { Lista, TextId, TextNome, ContainerPokemonInfo, BotaoAtivo, BotaoInativo, TelaInfo, TextIntroduction, OptionTitle, AttributesText } from "./style";
+import { Lista, TextId, TextNome, ContainerPokemonInfo, BotaoAtivo, BotaoInativo, TelaInfo, TextIntroduction } from "./style";
 import { Alert } from "react-native";
 import { initializeApp } from 'firebase/app'
 import { firebaseConfig } from '../../../firebase-config';
-import { getDatabase, ref, set, push, get, remove} from 'firebase/database';
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import { getDatabase, ref, push, get, remove} from 'firebase/database';
+import {getAuth} from 'firebase/auth'
 import { Platform } from "react-native";
 
 
@@ -211,26 +211,25 @@ const PokemonInfo = () => {
                                 {
                                     evolutions.map((evolution, index) =>
                                         index != 0 && index != 1?
-                                        <>
+                                        <Fragment key={`Evolution-${index}`}>
                                             <PokemonEvolutionBox name={evolutions[index-1].name} imageId={evolutions[index-1].idImage}/>
                                             <View style={styles.levelContainer}>
                                                 <FontAwesome name="arrow-right" size={20} color="#747476"/>
                                                 <Text style={{fontWeight:700, fontSize:12}}>(Lv:{evolution.level})</Text>
                                             </View>
                                             <PokemonEvolutionBox name={evolution.name} imageId={evolution.idImage}/>
-                                        </>
+                                        </Fragment >
                                          :
                                          index == 1?
-                                         <>
+                                         <Fragment key={`Evolution-${index}`}>
                                             <View style={styles.levelContainer}>
                                                 <FontAwesome name="arrow-right" size={20} color="#747476"/>
                                                 <Text style={{fontWeight:700, fontSize:12}}>(Lv:{evolution.level})</Text>
                                             </View>
                                             <PokemonEvolutionBox name={evolution.name} imageId={evolution.idImage}/>
-                                         </>
+                                         </Fragment>
                                         :
-                                        <PokemonEvolutionBox name={evolution.name} imageId={evolution.idImage}/>
-
+                                        <PokemonEvolutionBox key={`Evolution-${index}`} name={evolution.name} imageId={evolution.idImage}/>
                                     )
                                 }
                             </Lista>

@@ -1,4 +1,4 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {Text,TouchableOpacity, Image, View } from 'react-native';
 import backgroundType from '../../src/GlobalStyles'

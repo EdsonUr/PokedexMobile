@@ -3,10 +3,8 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import DeckBox from "../../../components/DeckBox";
 import { initializeApp } from 'firebase/app'
 import { firebaseConfig } from '../../../firebase-config';
-import { getDatabase, ref, set, push, get, remove} from 'firebase/database';
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
-import { Platform } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { getDatabase, ref, get} from 'firebase/database';
+import {getAuth} from 'firebase/auth'
 
 const DecksGerados = () => {
     const[db, setDb] = useState({})
@@ -58,7 +56,9 @@ const DecksGerados = () => {
                 null
                 :
                 banco.length == 0?
-                <Text> Sem deck </Text>
+                <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                    <Text> Sem deck </Text>
+                </View>
                 :
                 <ScrollView style={{width:'100%'}} contentContainerStyle={{alignItems:'center'}}>
                     {
@@ -67,7 +67,6 @@ const DecksGerados = () => {
                         ))
                     }
                 </ScrollView>
-                
             }
         </View>
     )

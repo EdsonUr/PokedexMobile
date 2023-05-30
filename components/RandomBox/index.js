@@ -1,6 +1,6 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React from 'react'
-import {Text,TouchableOpacity, Image, View, StyleSheet } from 'react-native';
+import {Text,TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Container, Nome } from './style'
 import boxType from '../../src/GlobalStyles/boxType'
 

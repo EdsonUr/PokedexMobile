@@ -1,12 +1,10 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react'
-import { Text, View,Image, TouchableOpacity, Alert } from 'react-native';
+import { Image, TouchableOpacity, Alert } from 'react-native';
 import { Container,InfoContainer,ContainerDados,PokemonsContainer, NomeTexto } from './style';
 import FontAwesome from '@expo/vector-icons/FontAwesome' 
-import { initializeApp } from 'firebase/app'
-import { firebaseConfig } from '../../firebase-config';
-import { getDatabase, ref, set, push, get, remove} from 'firebase/database';
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import { getDatabase, ref, remove} from 'firebase/database';
+import {getAuth} from 'firebase/auth'
 
 const DeckBox = ({infos, name, setRefresh, valuesLink})=>{
     const navigation = useNavigation()

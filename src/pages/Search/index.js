@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TextInput } from "react-native";
-import { StyleSheet, TouchableWithoutFeedback, Keyboard, ActivityIndicator} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import PokemonBox from "../../../components/PokemonsBox";
 import api from "../../services/api";
 import { Container, Lista } from './style'

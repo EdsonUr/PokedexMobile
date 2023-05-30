@@ -1,6 +1,6 @@
 import react from "react";
 import { Container} from "./style";
-import {Text,TouchableOpacity, Image, View,StyleSheet,ImageBackground } from 'react-native';
+import {Text, Image, StyleSheet,ImageBackground } from 'react-native';
 import pokeball from '../../assets/Pokeball.png'
 
 const PokemonEvolutionBox = ({name,imageId}) =>{

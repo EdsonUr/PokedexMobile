@@ -1,7 +1,7 @@
 import React from "react";
-import { Image, StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from "react-native-gesture-handler";
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import {getAuth} from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
 import { firebaseConfig } from '../../../firebase-config';
 import { useNavigation } from "@react-navigation/native";

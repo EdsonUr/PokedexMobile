@@ -2,12 +2,8 @@ import React, { useState, useEffect } from "react";
 import api from "../../services/api";
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import RandomBox from "../../../components/RandomBox";
-import { BotaoGerar } from "./style";
-import { initializeApp } from 'firebase/app'
-import { firebaseConfig } from '../../../firebase-config';
-import { getDatabase, ref, set, push, get, remove} from 'firebase/database';
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
-import { Platform,Alert } from "react-native";
+import { getDatabase, ref, push} from 'firebase/database';
+import {getAuth} from 'firebase/auth'
 import DialogInput from 'react-native-dialog-input';
 
 const Home = () => {

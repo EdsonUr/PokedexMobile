@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native';
-import { View,Text, StyleSheet,Image, KeyboardAvoidingView, Alert } from 'react-native';
-import { Container,HeaderWelcome, BodyInformation,InputEmail } from './style';
+import { View,Text, StyleSheet, KeyboardAvoidingView, Alert } from 'react-native';
+import { HeaderWelcome, BodyInformation,InputEmail } from './style';
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
 import { firebaseConfig } from '../../../firebase-config';
