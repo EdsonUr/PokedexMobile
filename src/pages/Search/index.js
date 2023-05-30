@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TextInput } from "react-native";
-import { StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, View, ActivityIndicator} from 'react-native';
 import PokemonBox from "../../../components/PokemonsBox";
 import api from "../../services/api";
 import { Container, Lista } from './style'
@@ -8,6 +8,7 @@ import { Container, Lista } from './style'
 const Search = ({navigation}) => {
     const[text, setText] = useState('')
     const[pokemons, setPokemons] = useState([])
+    const[isLoading, setIsLoading] = useState(true)
 
     useEffect(() =>{
         async function getAllPokemons(){
@@ -27,6 +28,7 @@ const Search = ({navigation}) => {
                 })
             )
             setPokemons(loadPokemons)
+            setIsLoading(false)
         }
 
         getAllPokemons()
@@ -45,20 +47,28 @@ const Search = ({navigation}) => {
         <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss
         }}>
-            <Container>
-                <TextInput style = {styles.input}
-                placeholder="Pesquise um pokemon"
-                onChangeText={(v) => setText(v)}
-                />
-                <Lista
-                    contentContainerStyle={{alignItems:'center'}}
-                    keyExtractor={(pokemon)=> pokemon.id}
-                    data={text === '' ? pokemons : pokemons.filter((pokemon) => (pokemon.name.toLowerCase().includes(text.toLowerCase())))}
-                    renderItem={({ item }) => (
-                        <PokemonBox name={item.name} id={item?.id} type={item?.types} navigation={navigation} />
-                    )}
-                />
-            </Container>
+            {
+                isLoading?
+                <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                    <ActivityIndicator size={'small'} color={'blue'}/>
+                </View>
+                :
+                <Container>
+                    <TextInput style = {styles.input}
+                    placeholder="Pesquise um pokemon"
+                    onChangeText={(v) => setText(v)}
+                    />
+                    <Lista
+                        contentContainerStyle={{alignItems:'center'}}
+                        keyExtractor={(pokemon)=> pokemon.id}
+                        data={text === '' ? pokemons : pokemons.filter((pokemon) => (pokemon.name.toLowerCase().includes(text.toLowerCase())))}
+                        renderItem={({ item }) => (
+                            <PokemonBox name={item.name} id={item?.id} type={item?.types} navigation={navigation} />
+                        )}
+                    />
+                </Container>
+            }
+            
         </TouchableWithoutFeedback>
     )
 }

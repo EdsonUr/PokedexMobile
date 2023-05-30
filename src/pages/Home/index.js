@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import RandomBox from "../../../components/RandomBox";
 import { getDatabase, ref, push} from 'firebase/database';
 import {getAuth} from 'firebase/auth'
@@ -72,22 +72,27 @@ const Home = () => {
     }
     return(
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity style={styles.botao} onPress={() => handleRandom()}  >
-                <Text style={styles.textoBotao}>Gerar</Text>
-            </TouchableOpacity>
             {
-                generated?
+                isLoading?
+                <ActivityIndicator size={'small'} color={'blue'} />
+                :
                 <>
-                  <FlatList
-                    contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
-                    keyExtractor={(pokemon) => pokemon.id}
-                    ItemSeparatorComponent={() => <View style={{height: 35}} />}
-                    data={pokemonsAleatorios}
-                    renderItem={({item}) =>(
-                        <RandomBox name={item.name} id={item.id} type={item.types} />
-                    )}
-                    numColumns={2}
-                    style={styles.lista}
+                <TouchableOpacity style={styles.botao} onPress={() => handleRandom()}  >
+                    <Text style={styles.textoBotao}>Gerar</Text>
+                </TouchableOpacity>
+                {
+                    generated?
+                    <>
+                    <FlatList
+                        contentContainerStyle={{alignItems:'center', justifyContent:'center'}}
+                        keyExtractor={(pokemon) => pokemon.id}
+                        ItemSeparatorComponent={() => <View style={{height: 35}} />}
+                        data={pokemonsAleatorios}
+                        renderItem={({item}) =>(
+                            <RandomBox name={item.name} id={item.id} type={item.types} />
+                        )}
+                        numColumns={2}
+                        style={styles.lista}
                     />
                     <TouchableOpacity style={styles.botao2} onPress={ () => { 
                     setVisible(true)
@@ -114,35 +119,33 @@ const Home = () => {
                                     });
                                 setVisible(false);
                             }}
-                            closeDialog={() => setVisible(false)}>
+                            closeDialog={() => setVisible(false)}>  
                         </DialogInput>
                         <Text style={styles.textoBotao}>Salvar</Text>
                     </TouchableOpacity>
+                    </>
+                    :
+                    <>
+                    <View>
+                        <View style={{flexDirection:'row', marginBottom:35}}>
+                            <RandomBox name={null} id={null} type={null}/>
+                            <RandomBox name={null} id={null} type={null}/>
+                        </View>
+                        <View style={{flexDirection:'row', marginBottom:35}}>
+                            <RandomBox name={null} id={null} type={null}/>
+                            <RandomBox name={null} id={null} type={null}/>
+                        </View>
+                        <View style={{flexDirection:'row', marginBottom:35}}>
+                            <RandomBox name={null} id={null} type={null}/>
+                            <RandomBox name={null} id={null} type={null}/>
+                        </View>
+                    </View>      
+                        <View style={styles.inv}>
+                    </View> 
+                    </>
+                }
                 </>
-              
-                :
-                <>
-                <View>
-                    <View style={{flexDirection:'row', marginBottom:35}}>
-                        <RandomBox name={null} id={null} type={null}/>
-                        <RandomBox name={null} id={null} type={null}/>
-                    </View>
-                    <View style={{flexDirection:'row', marginBottom:35}}>
-                        <RandomBox name={null} id={null} type={null}/>
-                        <RandomBox name={null} id={null} type={null}/>
-                    </View>
-                    <View style={{flexDirection:'row', marginBottom:35}}>
-                        <RandomBox name={null} id={null} type={null}/>
-                        <RandomBox name={null} id={null} type={null}/>
-                    </View>
-                </View>      
-                <View style={styles.inv}>
-                </View> 
-                </>
-                             
             }
-            
-             
         </SafeAreaView>
     )
 }
