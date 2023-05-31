@@ -9,11 +9,16 @@ const Search = ({navigation}) => {
     const[text, setText] = useState('')
     const[pokemons, setPokemons] = useState([])
     const[isLoading, setIsLoading] = useState(true)
+    const[footerLoading, setFooterLoading] = useState(true)
+    const[numPokemons, setNumPokemons] = useState(40)
+    const[getMore, setGetMore] = useState(false)
 
     useEffect(() =>{
         async function getAllPokemons(){
-            const response = await api.get('/pokemon?limit=40&offset=0')
+            const response = await api.get(`/pokemon?limit=${numPokemons}&offset=0`)
             const { results } = response.data
+            console.log("UseEffect : " + results.length)
+            setFooterLoading(true)
 
             const loadPokemons = await Promise.all(
                 results.map(async (pokemon) => {
@@ -27,10 +32,10 @@ const Search = ({navigation}) => {
 
                 })
             )
-            setPokemons(loadPokemons)
+            setPokemons([...pokemons, ...loadPokemons])
             setIsLoading(false)
+            setFooterLoading(false)
         }
-
         getAllPokemons()
     },[])
 
@@ -43,6 +48,34 @@ const Search = ({navigation}) => {
         }
     }
     console.log(text.toLowerCase())
+
+    const handleGetMore = async() =>{
+        console.log(getMore)
+        setGetMore(true)
+        if(!getMore){
+            const response = await api.get(`/pokemon?limit=${numPokemons - numPokemons*1/2}&offset=${numPokemons}`)
+            const { results } = response.data
+            console.log(results.length)
+            setFooterLoading(true)
+    
+            const loadPokemons = await Promise.all(
+                results.map(async (pokemon) => {
+                    const {id, types} = await getMoreInfo(pokemon.url)
+                    
+                    return{
+                        name:pokemon.name,
+                        id,
+                        types
+                    }
+    
+                })
+            )
+            setPokemons([...pokemons, ...loadPokemons])
+            setNumPokemons((prevNumPokemons) => prevNumPokemons + prevNumPokemons*1/2)
+            setGetMore(false)
+        }
+    }
+
     return(
         <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss
@@ -65,6 +98,16 @@ const Search = ({navigation}) => {
                         renderItem={({ item }) => (
                             <PokemonBox name={item.name} id={item?.id} type={item?.types} navigation={navigation} />
                         )}
+                        ListFooterComponent={
+                            footerLoading?
+                            <View style={{marginTop:10}}>
+                                <ActivityIndicator size={'small'} color={'blue'} />
+                            </View>
+                            :
+                            null
+                        }
+                        onEndReachedThreshold={0.01}
+                        onEndReached={() => { handleGetMore()}}
                     />
                 </Container>
             }
