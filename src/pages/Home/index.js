@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Platform } from 'react-native';
 import RandomBox from "../../../components/RandomBox";
 import { getDatabase, ref, push} from 'firebase/database';
 import {getAuth} from 'firebase/auth'
@@ -76,8 +76,8 @@ const Home = () => {
                 isLoading?
                 <ActivityIndicator size={'small'} color={'blue'} />
                 :
-                <>
-                <TouchableOpacity style={styles.botao} onPress={() => handleRandom()}  >
+                <View style={{flex:1, alignItems:'center', justifyContent:'space-between'}}>
+                <TouchableOpacity style={Platform.OS === 'android'?styles.botaoAndroid: styles.botaoIos} onPress={() => handleRandom()}  >
                     <Text style={styles.textoBotao}>Gerar</Text>
                 </TouchableOpacity>
                 {
@@ -94,7 +94,7 @@ const Home = () => {
                         numColumns={2}
                         style={styles.lista}
                     />
-                    <TouchableOpacity style={styles.botao2} onPress={ () => { 
+                    <TouchableOpacity style={Platform.OS === 'android'?styles.botao2Android:styles.botao2} onPress={ () => { 
                     setVisible(true)
                     }}>
                         <DialogInput
@@ -144,7 +144,7 @@ const Home = () => {
                     </View> 
                     </>
                 }
-                </>
+                </View>
             }
         </SafeAreaView>
     )
@@ -160,9 +160,20 @@ const styles = StyleSheet.create({
         fontSize:25,
         fontWeight:'bold'
     },
-    botao:{
+    botaoIos:{
         marginTop:20,
         marginBottom:40, 
+        backgroundColor:'#1F3955',
+        width:190,
+        height:50,
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:38,
+    },
+    botaoAndroid:{
+        marginTop:20,
+        marginBottom:20, 
         backgroundColor:'#1F3955',
         width:190,
         height:50,
@@ -182,6 +193,16 @@ const styles = StyleSheet.create({
     botao2:{
         marginTop:20,
         marginBottom:40, 
+        backgroundColor:'#1F3955',
+        width:190,
+        height:50,
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:38,
+    },
+    botao2Android:{
+        marginBottom:20, 
         backgroundColor:'#1F3955',
         width:190,
         height:50,

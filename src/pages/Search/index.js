@@ -71,6 +71,7 @@ const Search = ({navigation}) => {
                 })
             )
             setPokemons([...pokemons, ...loadPokemons])
+            setFooterLoading(false)
             setNumPokemons((prevNumPokemons) => prevNumPokemons + prevNumPokemons*1/2)
             setGetMore(false)
         }

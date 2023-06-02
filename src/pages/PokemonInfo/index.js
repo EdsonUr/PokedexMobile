@@ -16,6 +16,45 @@ import { getDatabase, ref, push, get, remove} from 'firebase/database';
 import {getAuth} from 'firebase/auth'
 import { Platform } from "react-native";
 
+import bug from '../../../assets/bug.png'
+import dark from '../../../assets/dark.png'
+import dragon from '../../../assets/dragon.png'
+import electric from '../../../assets/electric.png'
+import fairy from '../../../assets/fairy.png'
+import fighting from '../../../assets/fighting.png'
+import fire from '../../../assets/fire.png'
+import flying from '../../../assets/flying.png'
+import ghost from '../../../assets/ghost.png'
+import grass from '../../../assets/grass.png'
+import ground from '../../../assets/ground.png'
+import ice from '../../../assets/ice.png'
+import normal from '../../../assets/normal.png'
+import poison from '../../../assets/poison.png'
+import psychic from '../../../assets/psychic.png'
+import rock from '../../../assets/rock.png'
+import steel from '../../../assets/steel.png'
+import water from '../../../assets/water.png'
+
+const typesDictionay = {
+    'bug':bug,
+    'dark':dark,
+    'dragon':dragon,
+    'electric':electric,
+    'fairy':fairy,
+    'fighting':fighting,
+    'fire':fire,
+    'flying':flying,
+    'ghost':ghost,
+    'grass':grass,
+    'ground':ground,
+    'ice':ice,
+    'normal':normal,
+    'poison':poison,
+    'psychic':psychic,
+    'rock':rock,
+    'steel':steel,
+    'water':water,
+}
 
 const PokemonInfo = () => {
     const route = useRoute()
@@ -34,21 +73,66 @@ const PokemonInfo = () => {
     const[db, setDb] = useState({})
     const[corStar, setCorStar] = useState('white')
     const[itemPokemon, setItemPokemon] = useState()
+    const[weakness,setWeakness] = useState([])
+    const[loadingWeakness, setLoadingWeakness] = useState(true)
     const app = initializeApp(firebaseConfig);
     const database = getDatabase();
     const auth = getAuth();
     const user = auth.currentUser.uid
     
     useEffect(() =>{
+        var dictionary = {}
         async function getPokemonDetail(){
             try{
                 const response = await api.get(`/pokemon/${id}`)
-                const {stats,abilities,height,weight} = response.data
+                const {stats,abilities,height,weight,types} = response.data
                 setPokemon({
                     stats,
                     abilities,
                     height,
                     weight,
+                    types,
+                })
+                dictionary = {
+                    stats,
+                    abilities,
+                    height,
+                    weight,
+                    types,
+                }
+                var final = []
+                var tipoFraco = []
+                var resistencia = []
+                Object.keys(dictionary.types).map((tipo, index) =>{
+                    const response = api.get(dictionary.types[tipo].type.url)
+                    .then((response)=>{
+                        const {damage_relations} = response.data
+                        const arrayFracos = damage_relations.double_damage_from
+                        const arrayResistencia = damage_relations.half_damage_from
+                        const arrayNoDamageFrom = damage_relations.no_damage_from
+                        console.log(arrayNoDamageFrom)
+                        arrayFracos.map((doubleDamageType, index) =>{
+                            if(tipoFraco.includes(doubleDamageType.name)){
+                                console.log("ja tem")
+                            }else{
+                                tipoFraco.push(doubleDamageType.name)
+                            }
+                        })
+                        arrayResistencia.map((resistenciaType, index) =>{
+                            if(resistencia.includes(resistenciaType.name)){
+                                console.log("ja tem")
+                            }else{
+                                resistencia.push(resistenciaType.name)
+                            }
+                        })
+                        arrayNoDamageFrom.map((noDamage, index) =>{
+                            resistencia.push(noDamage.name)
+                        })
+                        final = tipoFraco.filter(item=>!resistencia.includes(item))
+                        console.log(final)
+                        setLoadingWeakness(false)
+                        setWeakness(final)
+                    })
                 })
                 setIsLoadingStats(false)
             }catch(err){
@@ -119,7 +203,10 @@ const PokemonInfo = () => {
             })
         } 
     },[db])
-   
+
+    const handleFraco = async()=>{
+       
+    }
     return(
         <View style={{flex:1,backgroundColor:boxType[type[0].type.name]}}>
             <View style={styles.container}>
@@ -181,7 +268,7 @@ const PokemonInfo = () => {
                 </View>
                 {
                     activeScreen === 'about' ?
-                    isLoadingAbout?<TelaInfo>
+                    isLoadingAbout || isLoadingStats?<TelaInfo>
                     <ActivityIndicator size='large' />
                     </TelaInfo>:
                     //ABOUT
@@ -193,10 +280,31 @@ const PokemonInfo = () => {
                                 <Text style={styles.attributes}> Height: </Text>
                                 <TextIntroduction> {(pokemon.height)/10 + "m"} </TextIntroduction>
                             </View>
-                            <View style={{flexDirection:'row', marginTop:22}}>
+                            <View style={{flexDirection:'row', marginTop:22, marginBottom:22}}>
                                 <Text style={styles.attributes}> Weight: </Text>
                                 <TextIntroduction> {(pokemon.weight)/10 + "kg"} </TextIntroduction>
                             </View>
+                            <Text style={{marginBottom:20,fontSize:16,fontWeight:700,marginTop:Platform.OS ==='android'?20:0, color:boxType[type[0].type.name]}} >Weaknesses</Text>
+                            <View style={{width:'100%', flexDirection:'row', columnGap:8, flexWrap:'wrap', marginBottom:6}}>
+                            {
+                                loadingWeakness?
+                                <ActivityIndicator size={'small'} color={boxType[type[0].type.name]} />
+                                :
+                                weakness.map((weak, index)=>(
+                                    <TouchableOpacity key={index} onPress={()=>Alert.alert(weak)}>
+                                        <Image source={typesDictionay[weak]}  style={{height:45, width:45}}/>
+                                    </TouchableOpacity>
+                                ))
+                            }
+                            </View>
+                            <Text style={{marginBottom:20,fontSize:16,fontWeight:700,marginTop:Platform.OS ==='android'?20:0, color:boxType[type[0].type.name]}}>Abilities</Text>
+                            {
+                            pokemon.abilities.map(currentAbility => 
+                                <Text style={{fontWeight:'500',textTransform:'capitalize',width: 110,marginBottom:20}} key={currentAbility.ability.name}>
+                                    {currentAbility.ability.name}
+                                </Text>)
+                             }
+                            
                         </ScrollView>
                     </TelaInfo>:
                     activeScreen === 'evolution' ? 
