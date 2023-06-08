@@ -204,9 +204,13 @@ const PokemonInfo = () => {
         } 
     },[db])
 
-    const handleFraco = async()=>{
-       
+    const handleFormat = () =>{
+        let texto = "";
+        texto = introduction.replaceAll("\n", " ").toLowerCase()
+        texto = texto.replaceAll("\f", " ").toLowerCase()
+        return texto
     }
+
     return(
         <View style={{flex:1,backgroundColor:boxType[type[0].type.name]}}>
             <View style={styles.container}>
@@ -274,8 +278,8 @@ const PokemonInfo = () => {
                     //ABOUT
                     <TelaInfo>
                         <ScrollView>
-                            <TextIntroduction> {introduction.replaceAll("\n", " ").toLowerCase()} </TextIntroduction>
-                            <Text style={{fontSize:16,fontWeight:700,marginTop:Platform.OS ==='android'?20:0, color:boxType[type[0].type.name]}} >Pokedéx Data</Text>
+                            <TextIntroduction> {handleFormat()} </TextIntroduction>
+                            <Text style={{fontSize:16,fontWeight:700,marginTop:20, color:boxType[type[0].type.name]}} >Pokedéx Data</Text>
                             <View style={{flexDirection:'row',marginTop:22}}>
                                 <Text style={styles.attributes}> Height: </Text>
                                 <TextIntroduction> {(pokemon.height)/10 + "m"} </TextIntroduction>
@@ -284,7 +288,7 @@ const PokemonInfo = () => {
                                 <Text style={styles.attributes}> Weight: </Text>
                                 <TextIntroduction> {(pokemon.weight)/10 + "kg"} </TextIntroduction>
                             </View>
-                            <Text style={{marginBottom:20,fontSize:16,fontWeight:700,marginTop:Platform.OS ==='android'?20:0, color:boxType[type[0].type.name]}} >Weaknesses</Text>
+                            <Text style={{marginBottom:20,fontSize:16,fontWeight:700,marginTop:0, color:boxType[type[0].type.name]}} >Weaknesses</Text>
                             <View style={{width:'100%', flexDirection:'row', columnGap:8, flexWrap:'wrap', marginBottom:6}}>
                             {
                                 loadingWeakness?
@@ -297,7 +301,7 @@ const PokemonInfo = () => {
                                 ))
                             }
                             </View>
-                            <Text style={{marginBottom:20,fontSize:16,fontWeight:700,marginTop:Platform.OS ==='android'?20:0, color:boxType[type[0].type.name]}}>Abilities</Text>
+                            <Text style={{marginBottom:20,fontSize:16,fontWeight:700,marginTop:0, color:boxType[type[0].type.name]}}>Abilities</Text>
                             {
                             pokemon.abilities.map(currentAbility => 
                                 <Text style={{fontWeight:'500',textTransform:'capitalize',width: 110,marginBottom:20}} key={currentAbility.ability.name}>
